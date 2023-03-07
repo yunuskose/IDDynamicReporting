@@ -1,0 +1,110 @@
+﻿@model IDReporting.Models.Sorgular
+@{
+    ViewBag.Title = "Sorgu";
+    IDReporting.Models.Sorgular entity = new IDReporting.Models.Sorgular();
+    if (Model != null)
+    {
+        entity = Model;
+    }
+    else
+    {
+        entity.ID = 0;
+        entity.Aktif = false;
+        entity.SubeID = 0;
+
+    }
+}
+<h4>Rapor Bilgisi #@entity.ID</h4>
+<form action="@Url.Action("Sorgu","ID",null)" method="post">
+    <input type="hidden" name="id" value="@entity.ID" />
+    <input type="hidden" name="Sube" value="@entity.SubeID" />
+    <div class="row">
+
+        <div class="col-12 col-sm-3">
+            <label>Kategori</label>
+            <select class="form-control" name="KategoriID">
+                @foreach (IDReporting.Models.Parametreler _entity in ((List<IDReporting.Models.Parametreler>)ViewBag.Kategoriler))
+                {
+                    <option value="@_entity.ID">@_entity.Deger</option>
+                }
+            </select>
+        </div>
+        <div class="col-12 col-sm-9">
+            <label>İsim</label>
+            <input type="text" name="Isim" value="@entity.Isim" class="form-control" />
+        </div>
+
+    </div>
+    <div class="row">
+
+        <div class="col-12 col-sm-12">
+            <label>Bağlantı</label>
+            <select class="form-control" id="BaglantiID" name="BaglantiID">
+                <option value="0">Lütfen bağlantı seçiniz...</option>
+                @foreach (IDReporting.Models.Baglantilar _entity in ((List<IDReporting.Models.Baglantilar>)ViewBag.Baglantilar))
+                {
+                    <option value="@_entity.ID" @(_entity.ID == entity.BaglantiID ? "selected" : "")>@_entity.Isim</option>
+                }
+            </select>
+        </div>
+
+
+        <div class="col-12 col-sm-12">
+            <label>Sorgu Tipi</label>
+            <select class="form-control" id="SorguTipi" name="SorguTipi" onclick="SorguTipiSec();">
+                <option value="">Lütfen Sorgu Tipi Seçini...</option>
+                <option value="Table" @("Table" == entity.SorguTipi ? "selected" : "")>Table</option>
+                <option value="View" @("View" == entity.SorguTipi ? "selected" : "")>View</option>
+                <option value="Procedure" @("Procedure" == entity.SorguTipi ? "selected" : "")>Procedure</option>
+            </select>
+        </div>
+        <div class="col-12 col-sm-12">
+            <label>Sorgu </label>
+            <select class="form-control" id="SorguMetni" name="SorguMetni"></select>
+        </div>
+        <div class="col-12 col-sm-12">
+            <p>Bilgilendirme : Sorgu sonucundaki veri tiplerinden sadece <strong>string, int32, decimal, datatable ve boolean</strong> veri tiplerini desteklemekteyiz.</p>
+        </div>
+        <div class="col-12 col-sm-12">
+            <br />
+            <label class="form-check-label">Aktif</label>
+            <input type="checkbox" name="Aktif" value="1" class="form-check-input" @(entity.Aktif == true ? "checked=\"true\"" : "") />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 col-sm-2">
+            <br />
+            <input type="submit" name="name" value="Kaydet" class="btn btn-primary" />
+        </div>
+    </div>
+
+</form>
+@section Scripts {
+    <script type="text/javascript">
+
+    function SorguTipiSec() {
+
+        if ($("#SorguTipi").val() != "") {
+                    $.ajax({
+                        url: '/ID/SorguTipiSec/?SorguTipi=' + $("#SorguTipi").val() + '&BaglantiID='+$("#BaglantiID").val()+'',
+                        type: 'Get',
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (Data) {
+
+                            $("#SorguMetni").find('option')
+                                .remove()
+                                .end();
+                            $("#SorguMetni").append("<option value=''>Lütfen sorgu seçiniz...</option>");
+                            for (var i = 0; i < Data.length; i++) {
+                                $("#SorguMetni").append("<option value='" + Data[i].Isim + "'>" + Data[i].Isim + "</option>");
+                            }
+                            $("#SorguMetni").val('@entity.Sorgu');
+
+                        }
+                    });
+                }
+    }
+        SorguTipiSec();
+    </script>
+}

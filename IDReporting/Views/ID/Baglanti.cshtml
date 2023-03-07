@@ -1,0 +1,64 @@
+﻿@model IDReporting.Models.Baglantilar
+@{
+    ViewBag.Title = "Bağlantı";
+    IDReporting.Models.Baglantilar entity = new IDReporting.Models.Baglantilar();
+    if (Model != null)
+    {
+        entity = Model;
+    }
+    else
+    {
+        entity.ID = 0;
+        entity.SubeID = 0;
+
+    }
+}
+<h4>Kullanıcı Bilgisi #@entity.ID</h4>
+<form action="@Url.Action("Baglanti","ID",null)" method="post">
+    <input type="hidden" name="id" value="@entity.ID" />
+    <input type="hidden" name="Sube" value="@entity.SubeID" />
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <label>İsim</label>
+            <input type="text" name="Isim" value="@entity.Isim" class="form-control" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-2">
+            <label>Sunucu</label>
+            <input type="text" name="Sunucu" value="@entity.Sunucu" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>Veritabanı</label>
+            <input type="text" name="Veritabani" value="@entity.Veritabani" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>Kullanıcı Adı</label>
+            <input type="text" name="KullaniciAdi" value="@entity.KullaniciAdi" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>Parola</label>
+            <input type="password" name="Parola" value="@entity.Parola" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>Port</label>
+            <input type="text" name="Port" value="@entity.Port" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>Şema (Schema)</label>
+            <input type="text" name="Sema" value="@entity.Sema" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-12">
+            <br />
+            <p>Bilgilendirme : Sadece MS-SQL alt yapısı bulunan sunuculara bağlantı sağlamaktadır.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 col-sm-2">
+            <br />
+            <input type="submit" name="name" value="Kaydet" class="btn btn-primary" />
+        </div>
+    </div>
+
+
+</form>

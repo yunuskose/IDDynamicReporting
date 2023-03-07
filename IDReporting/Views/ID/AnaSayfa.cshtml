@@ -1,0 +1,28 @@
+﻿@using IDReporting.Models;
+@{
+    ViewBag.Title = "Ana Sayfa";
+    IDReportingEntities db = new IDReportingEntities();
+}
+
+<div class="jumbotron">
+    <h4>Yenilikler</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>Açıklama</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in db.Yeniliklers.OrderByDescending((o)=>o.Tarih).ToList())
+            {
+                <tr>
+                    <td>@item.Tarih</td>
+                    <td>@item.Aciklama</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

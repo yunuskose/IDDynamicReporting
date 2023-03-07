@@ -1,0 +1,33 @@
+﻿@model IDReporting.Models.Parametreler
+@{
+    ViewBag.Title = Request.QueryString["Tip"];
+    IDReporting.Models.Parametreler entity = new IDReporting.Models.Parametreler();
+    if (Model != null)
+    {
+        entity = Model;
+    }
+    else
+    {
+        entity.ID = 0;
+        entity.Tip = Request.QueryString["Tip"];
+    }
+}
+<h4>Kullanıcı Bilgisi #@entity.ID</h4>
+<form action="@Url.Action("Parametre","ID",null)" method="post">
+    <input type="hidden" name="id" value="@entity.ID" />
+    <input type="hidden" name="Tip" value="@entity.Tip" />
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <label>İsim</label>
+            <input type="text" name="Deger" value="@entity.Deger" class="form-control" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 col-sm-2">
+            <br />
+            <input type="submit" name="name" value="Kaydet" class="btn btn-primary" />
+        </div>
+    </div>
+
+
+</form>

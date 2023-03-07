@@ -1,0 +1,31 @@
+﻿@model List<IDReporting.Models.Sorgular>
+@using IDReporting.Models;
+@{
+    ViewBag.Title = "Kategori Listesi";
+    IDReportingEntities db = new IDReportingEntities();
+    int KategoriID = Convert.ToInt32(Request.QueryString["KategoriID"]);
+}
+
+<h4>Kategori Listesi - @db.Parametrelers.Where((e)=>e.ID == KategoriID).First().Deger</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Rapor Adı</th>
+            <th>Tip</th>
+            <th>Kayıt Tarihi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (IDReporting.Models.Sorgular entity in Model)
+        {
+        <tr>
+            <td>@entity.ID</td>
+            <td><a href="@Url.Action("Sorgu","Rapor",new { id = entity.ID, Isim= entity.Isim })" target="_blank">@entity.Isim</a></td>
+            <td>@entity.SorguTipi</td>
+            <td>@entity.KayitTarihi</td>
+        </tr>
+        }
+    </tbody>
+</table>
+

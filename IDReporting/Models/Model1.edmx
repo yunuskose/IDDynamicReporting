@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="IDReportingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Baglantilar">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SubeID" Type="int" />
+          <Property Name="Isim" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sunucu" Type="nvarchar" MaxLength="100" />
+          <Property Name="Veritabani" Type="nvarchar" MaxLength="100" />
+          <Property Name="KullaniciAdi" Type="nvarchar" MaxLength="100" />
+          <Property Name="Parola" Type="nvarchar" MaxLength="100" />
+          <Property Name="Port" Type="int" />
+          <Property Name="Sema" Type="nvarchar" MaxLength="50" />
+          <Property Name="KayitTarihi" Type="datetime" />
+          <Property Name="KayitYapanKullanici" Type="nvarchar(max)" />
+          <Property Name="DuzenlemeTarihi" Type="datetime" />
+          <Property Name="DuzenlemeYapanKullanici" Type="nvarchar" MaxLength="100" />
+          <Property Name="Silindi" Type="bit" />
+          <Property Name="SilinenTarih" Type="datetime" />
+          <Property Name="SilenKullanici" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Filtreler">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SorguID" Type="int" />
+          <Property Name="ParametreTipi" Type="nvarchar" MaxLength="100" />
+          <Property Name="FiltreTipi" Type="nvarchar" MaxLength="100" />
+          <Property Name="ParemetreAdi" Type="nvarchar" MaxLength="100" />
+          <Property Name="ParametreDegeri" Type="nvarchar" MaxLength="100" />
+          <Property Name="KayitTarihi" Type="datetime" />
+          <Property Name="KayitYapanKullanici" Type="nvarchar(max)" />
+          <Property Name="DuzenlemeTarihi" Type="datetime" />
+          <Property Name="DuzenlemeYapanKullanici" Type="nvarchar" MaxLength="100" />
+          <Property Name="Silindi" Type="bit" />
+          <Property Name="SilinenTarih" Type="datetime" />
+          <Property Name="SilenKullanici" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Gorunumler">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Kullanici" Type="nvarchar" MaxLength="100" />
+          <Property Name="SorguID" Type="int" />
+          <Property Name="SonucTipi" Type="nvarchar" MaxLength="100" />
+          <Property Name="EkAciklama1" Type="nvarchar(max)" />
+          <Property Name="EkAciklama2" Type="nvarchar(max)" />
+          <Property Name="EkAciklama3" Type="nvarchar(max)" />
+          <Property Name="EkAciklama4" Type="nvarchar(max)" />
+          <Property Name="EkAciklama5" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Kullanicilar">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sube" Type="nvarchar" MaxLength="100" />
+          <Property Name="KullaniciAdi" Type="nvarchar" MaxLength="100" />
+          <Property Name="Parola" Type="nvarchar" MaxLength="100" />
+          <Property Name="Isim" Type="nvarchar(max)" />
+          <Property Name="Email" Type="nvarchar(max)" />
+          <Property Name="Aktif" Type="bit" />
+          <Property Name="KayitTarihi" Type="datetime" />
+          <Property Name="KayitYapanKullanici" Type="nvarchar(max)" />
+          <Property Name="DuzenlemeTarihi" Type="datetime" />
+          <Property Name="DuzenlemeYapanKullanici" Type="nvarchar" MaxLength="100" />
+          <Property Name="Silindi" Type="bit" />
+          <Property Name="SilinenTarih" Type="datetime" />
+          <Property Name="SilenKullanici" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Parametreler">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Tip" Type="nvarchar" MaxLength="100" />
+          <Property Name="Deger" Type="nvarchar" MaxLength="100" />
+          <Property Name="KayitTarihi" Type="datetime" />
+          <Property Name="KayitYapanKullanici" Type="nvarchar(max)" />
+          <Property Name="DuzenlemeTarihi" Type="datetime" />
+          <Property Name="DuzenlemeYapanKullanici" Type="nvarchar" MaxLength="100" />
+          <Property Name="Silindi" Type="bit" />
+          <Property Name="SilinenTarih" Type="datetime" />
+          <Property Name="SilenKullanici" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Sorgular">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SubeID" Type="int" />
+          <Property Name="KategoriID" Type="int" />
+          <Property Name="SorguTipi" Type="nvarchar(max)" />
+          <Property Name="Isim" Type="nvarchar(max)" />
+          <Property Name="BaglantiID" Type="int" />
+          <Property Name="Sorgu" Type="nvarchar(max)" />
+          <Property Name="Aktif" Type="bit" />
+          <Property Name="KayitTarihi" Type="datetime" />
+          <Property Name="KayitYapanKullanici" Type="nvarchar(max)" />
+          <Property Name="DuzenlemeTarihi" Type="datetime" />
+          <Property Name="DuzenlemeYapanKullanici" Type="nvarchar" MaxLength="100" />
+          <Property Name="Silindi" Type="bit" />
+          <Property Name="SilinenTarih" Type="datetime" />
+          <Property Name="SilenKullanici" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Yenilikler">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Tarih" Type="datetime" />
+          <Property Name="Aciklama" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityContainer Name="IDReportingModelStoreContainer">
+          <EntitySet Name="Baglantilar" EntityType="Self.Baglantilar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Filtreler" EntityType="Self.Filtreler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Gorunumler" EntityType="Self.Gorunumler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kullanicilar" EntityType="Self.Kullanicilar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Parametreler" EntityType="Self.Parametreler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sorgular" EntityType="Self.Sorgular" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Yenilikler" EntityType="Self.Yenilikler" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="IDReportingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Filtreler">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SorguID" Type="Int32" />
+          <Property Name="ParametreTipi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FiltreTipi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ParemetreAdi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ParametreDegeri" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="KayitTarihi" Type="DateTime" Precision="3" />
+          <Property Name="KayitYapanKullanici" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DuzenlemeTarihi" Type="DateTime" Precision="3" />
+          <Property Name="DuzenlemeYapanKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Silindi" Type="Boolean" />
+          <Property Name="SilinenTarih" Type="DateTime" Precision="3" />
+          <Property Name="SilenKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Kullanicilar">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sube" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="KullaniciAdi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Parola" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Isim" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Aktif" Type="Boolean" />
+          <Property Name="KayitTarihi" Type="DateTime" Precision="3" />
+          <Property Name="KayitYapanKullanici" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DuzenlemeTarihi" Type="DateTime" Precision="3" />
+          <Property Name="DuzenlemeYapanKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Silindi" Type="Boolean" />
+          <Property Name="SilinenTarih" Type="DateTime" Precision="3" />
+          <Property Name="SilenKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Parametreler">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Tip" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Deger" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="KayitTarihi" Type="DateTime" Precision="3" />
+          <Property Name="KayitYapanKullanici" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DuzenlemeTarihi" Type="DateTime" Precision="3" />
+          <Property Name="DuzenlemeYapanKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Silindi" Type="Boolean" />
+          <Property Name="SilinenTarih" Type="DateTime" Precision="3" />
+          <Property Name="SilenKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="IDReportingEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Filtrelers" EntityType="Self.Filtreler" />
+          <EntitySet Name="Kullanicilars" EntityType="Self.Kullanicilar" />
+          <EntitySet Name="Parametrelers" EntityType="Self.Parametreler" />
+          <EntitySet Name="Sorgulars" EntityType="IDReportingModel.Sorgular" />
+          <EntitySet Name="Gorunumlers" EntityType="IDReportingModel.Gorunumler" />
+          <EntitySet Name="sysdiagrams" EntityType="IDReportingModel.sysdiagram" />
+          <EntitySet Name="Yeniliklers" EntityType="IDReportingModel.Yenilikler" />
+          <EntitySet Name="Baglantilars" EntityType="IDReportingModel.Baglantilar" />
+        </EntityContainer>
+        <EntityType Name="Sorgular">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SubeID" Type="Int32" />
+          <Property Name="KategoriID" Type="Int32" />
+          <Property Name="SorguTipi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Isim" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BaglantiID" Type="Int32" />
+          <Property Name="Sorgu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Aktif" Type="Boolean" />
+          <Property Name="KayitTarihi" Type="DateTime" Precision="3" />
+          <Property Name="KayitYapanKullanici" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DuzenlemeTarihi" Type="DateTime" Precision="3" />
+          <Property Name="DuzenlemeYapanKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Silindi" Type="Boolean" />
+          <Property Name="SilinenTarih" Type="DateTime" Precision="3" />
+          <Property Name="SilenKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Gorunumler">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Kullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SorguID" Type="Int32" />
+          <Property Name="SonucTipi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EkAciklama1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EkAciklama2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EkAciklama3" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EkAciklama4" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EkAciklama5" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Yenilikler">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Tarih" Type="DateTime" Precision="3" />
+          <Property Name="Aciklama" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Baglantilar">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SubeID" Type="Int32" />
+          <Property Name="Isim" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sunucu" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Veritabani" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="KullaniciAdi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Parola" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Port" Type="Int32" />
+          <Property Name="Sema" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="KayitTarihi" Type="DateTime" Precision="3" />
+          <Property Name="KayitYapanKullanici" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DuzenlemeTarihi" Type="DateTime" Precision="3" />
+          <Property Name="DuzenlemeYapanKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Silindi" Type="Boolean" />
+          <Property Name="SilinenTarih" Type="DateTime" Precision="3" />
+          <Property Name="SilenKullanici" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="IDReportingModelStoreContainer" CdmEntityContainer="IDReportingEntities">
+          <EntitySetMapping Name="Filtrelers">
+            <EntityTypeMapping TypeName="IDReportingModel.Filtreler">
+              <MappingFragment StoreEntitySet="Filtreler">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="SorguID" ColumnName="SorguID" />
+                <ScalarProperty Name="ParametreTipi" ColumnName="ParametreTipi" />
+                <ScalarProperty Name="FiltreTipi" ColumnName="FiltreTipi" />
+                <ScalarProperty Name="ParemetreAdi" ColumnName="ParemetreAdi" />
+                <ScalarProperty Name="ParametreDegeri" ColumnName="ParametreDegeri" />
+                <ScalarProperty Name="KayitTarihi" ColumnName="KayitTarihi" />
+                <ScalarProperty Name="KayitYapanKullanici" ColumnName="KayitYapanKullanici" />
+                <ScalarProperty Name="DuzenlemeTarihi" ColumnName="DuzenlemeTarihi" />
+                <ScalarProperty Name="DuzenlemeYapanKullanici" ColumnName="DuzenlemeYapanKullanici" />
+                <ScalarProperty Name="Silindi" ColumnName="Silindi" />
+                <ScalarProperty Name="SilinenTarih" ColumnName="SilinenTarih" />
+                <ScalarProperty Name="SilenKullanici" ColumnName="SilenKullanici" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kullanicilars">
+            <EntityTypeMapping TypeName="IDReportingModel.Kullanicilar">
+              <MappingFragment StoreEntitySet="Kullanicilar">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Sube" ColumnName="Sube" />
+                <ScalarProperty Name="KullaniciAdi" ColumnName="KullaniciAdi" />
+                <ScalarProperty Name="Parola" ColumnName="Parola" />
+                <ScalarProperty Name="Isim" ColumnName="Isim" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Aktif" ColumnName="Aktif" />
+                <ScalarProperty Name="KayitTarihi" ColumnName="KayitTarihi" />
+                <ScalarProperty Name="KayitYapanKullanici" ColumnName="KayitYapanKullanici" />
+                <ScalarProperty Name="DuzenlemeTarihi" ColumnName="DuzenlemeTarihi" />
+                <ScalarProperty Name="DuzenlemeYapanKullanici" ColumnName="DuzenlemeYapanKullanici" />
+                <ScalarProperty Name="Silindi" ColumnName="Silindi" />
+                <ScalarProperty Name="SilinenTarih" ColumnName="SilinenTarih" />
+                <ScalarProperty Name="SilenKullanici" ColumnName="SilenKullanici" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Parametrelers">
+            <EntityTypeMapping TypeName="IDReportingModel.Parametreler">
+              <MappingFragment StoreEntitySet="Parametreler">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Tip" ColumnName="Tip" />
+                <ScalarProperty Name="Deger" ColumnName="Deger" />
+                <ScalarProperty Name="KayitTarihi" ColumnName="KayitTarihi" />
+                <ScalarProperty Name="KayitYapanKullanici" ColumnName="KayitYapanKullanici" />
+                <ScalarProperty Name="DuzenlemeTarihi" ColumnName="DuzenlemeTarihi" />
+                <ScalarProperty Name="DuzenlemeYapanKullanici" ColumnName="DuzenlemeYapanKullanici" />
+                <ScalarProperty Name="Silindi" ColumnName="Silindi" />
+                <ScalarProperty Name="SilinenTarih" ColumnName="SilinenTarih" />
+                <ScalarProperty Name="SilenKullanici" ColumnName="SilenKullanici" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sorgulars">
+            <EntityTypeMapping TypeName="IDReportingModel.Sorgular">
+              <MappingFragment StoreEntitySet="Sorgular">
+                <ScalarProperty Name="SilenKullanici" ColumnName="SilenKullanici" />
+                <ScalarProperty Name="SilinenTarih" ColumnName="SilinenTarih" />
+                <ScalarProperty Name="Silindi" ColumnName="Silindi" />
+                <ScalarProperty Name="DuzenlemeYapanKullanici" ColumnName="DuzenlemeYapanKullanici" />
+                <ScalarProperty Name="DuzenlemeTarihi" ColumnName="DuzenlemeTarihi" />
+                <ScalarProperty Name="KayitYapanKullanici" ColumnName="KayitYapanKullanici" />
+                <ScalarProperty Name="KayitTarihi" ColumnName="KayitTarihi" />
+                <ScalarProperty Name="Aktif" ColumnName="Aktif" />
+                <ScalarProperty Name="Sorgu" ColumnName="Sorgu" />
+                <ScalarProperty Name="BaglantiID" ColumnName="BaglantiID" />
+                <ScalarProperty Name="Isim" ColumnName="Isim" />
+                <ScalarProperty Name="SorguTipi" ColumnName="SorguTipi" />
+                <ScalarProperty Name="KategoriID" ColumnName="KategoriID" />
+                <ScalarProperty Name="SubeID" ColumnName="SubeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Gorunumlers">
+            <EntityTypeMapping TypeName="IDReportingModel.Gorunumler">
+              <MappingFragment StoreEntitySet="Gorunumler">
+                <ScalarProperty Name="EkAciklama5" ColumnName="EkAciklama5" />
+                <ScalarProperty Name="EkAciklama4" ColumnName="EkAciklama4" />
+                <ScalarProperty Name="EkAciklama3" ColumnName="EkAciklama3" />
+                <ScalarProperty Name="EkAciklama2" ColumnName="EkAciklama2" />
+                <ScalarProperty Name="EkAciklama1" ColumnName="EkAciklama1" />
+                <ScalarProperty Name="SonucTipi" ColumnName="SonucTipi" />
+                <ScalarProperty Name="SorguID" ColumnName="SorguID" />
+                <ScalarProperty Name="Kullanici" ColumnName="Kullanici" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="IDReportingModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Yeniliklers">
+            <EntityTypeMapping TypeName="IDReportingModel.Yenilikler">
+              <MappingFragment StoreEntitySet="Yenilikler">
+                <ScalarProperty Name="Aciklama" ColumnName="Aciklama" />
+                <ScalarProperty Name="Tarih" ColumnName="Tarih" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Baglantilars">
+            <EntityTypeMapping TypeName="IDReportingModel.Baglantilar">
+              <MappingFragment StoreEntitySet="Baglantilar">
+                <ScalarProperty Name="SilenKullanici" ColumnName="SilenKullanici" />
+                <ScalarProperty Name="SilinenTarih" ColumnName="SilinenTarih" />
+                <ScalarProperty Name="Silindi" ColumnName="Silindi" />
+                <ScalarProperty Name="DuzenlemeYapanKullanici" ColumnName="DuzenlemeYapanKullanici" />
+                <ScalarProperty Name="DuzenlemeTarihi" ColumnName="DuzenlemeTarihi" />
+                <ScalarProperty Name="KayitYapanKullanici" ColumnName="KayitYapanKullanici" />
+                <ScalarProperty Name="KayitTarihi" ColumnName="KayitTarihi" />
+                <ScalarProperty Name="Sema" ColumnName="Sema" />
+                <ScalarProperty Name="Port" ColumnName="Port" />
+                <ScalarProperty Name="Parola" ColumnName="Parola" />
+                <ScalarProperty Name="KullaniciAdi" ColumnName="KullaniciAdi" />
+                <ScalarProperty Name="Veritabani" ColumnName="Veritabani" />
+                <ScalarProperty Name="Sunucu" ColumnName="Sunucu" />
+                <ScalarProperty Name="Isim" ColumnName="Isim" />
+                <ScalarProperty Name="SubeID" ColumnName="SubeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

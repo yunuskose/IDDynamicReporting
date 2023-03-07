@@ -1,0 +1,38 @@
+﻿@model List<IDReporting.Models.Sorgular>
+@{
+    ViewBag.Title = "Sorgular";
+    IDReporting.Models.IDReportingEntities db = new IDReporting.Models.IDReportingEntities();
+}
+
+<h4>Rapor Listesi</h4>
+<a href="@Url.Action("Sorgu","ID",new { id = 0 })">Yeni Rapor Ekle</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th style="display:none;">ID</th>
+            <th style="display:none;">Şube</th>
+            <th>Kategori</th>
+            <th>İsim</th>
+            <th>Sorgu</th>
+            <th>Tip</th>
+            <th>Aktif</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (IDReporting.Models.Sorgular entity in Model)
+        {
+        <tr>
+            <td style="display:none;">@entity.ID</td>
+            <td style="display:none;">@entity.SubeID</td>
+            <td><strong>@db.Parametrelers.Where((e) => e.ID == entity.KategoriID).FirstOrDefault().Deger</strong></td>
+            <td>@entity.Isim</td>
+            <td>@entity.Sorgu</td>
+            <td>@entity.SorguTipi</td>
+            <th>@(entity.Aktif == true ? "Aktif" : "Pasif")</th>
+            <td><a href="@Url.Action("Sorgu","ID",new { id = entity.ID })">Duzenle</a> | <a href="@Url.Action("SorguSil","ID",new { id = entity.ID })" onclick="return confirm('Silmek istediğinizden emin misini?')">Sil</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
+

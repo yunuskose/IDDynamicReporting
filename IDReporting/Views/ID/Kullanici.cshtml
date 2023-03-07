@@ -1,0 +1,54 @@
+﻿@model IDReporting.Models.Kullanicilar
+@{
+    ViewBag.Title = "Kullanıcı";
+    IDReporting.Models.Kullanicilar entity = new IDReporting.Models.Kullanicilar();
+    if (Model != null)
+    {
+        entity = Model;
+    }
+    else
+    {
+        entity.ID = 0;
+        entity.Aktif = false;
+        entity.Sube = "0";
+
+    }
+}
+<h4>Kullanıcı Bilgisi #@entity.ID</h4>
+<form action="@Url.Action("Kullanici","ID",null)" method="post">
+    <input type="hidden" name="id" value="@entity.ID" />
+    <input type="hidden" name="Sube" value="@entity.Sube" />
+    <div class="row">
+        <div class="col-12 col-sm-2">
+            <label>Kullanıcı Adı</label>
+            <input type="text" name="KullaniciAdi" value="@entity.KullaniciAdi" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>Parola</label>
+            <input type="password" name="Parola" value="@entity.Parola" class="form-control" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-2">
+            <label>İsim</label>
+            <input type="text" name="Isim" value="@entity.Isim" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>E-Mail</label>
+            <input type="text" name="Email" value="@entity.Email" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <br />
+            <label class="form-check-label">Aktif</label>
+            <input type="checkbox" name="Aktif" value="1" class="form-check-input" @(entity.Aktif == true ? "checked=\"true\"" : "") />
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-3 col-sm-2">
+                <br />
+                <input type="submit" name="name" value="Kaydet" class="btn btn-primary" />
+            </div>
+        </div>
+
+
+</form>

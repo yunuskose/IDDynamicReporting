@@ -1,0 +1,35 @@
+﻿@model List<IDReporting.Models.Kullanicilar>
+@{
+    ViewBag.Title = "Kullanıcılar";
+}
+
+<h4>Kullanıcı Listesi</h4>
+<a href="@Url.Action("Kullanici","ID",new { id = 0 })">Yeni Kullanıcı Ekle</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Şube</th>
+            <th>Kullanıcı Adı</th>
+            <th>İsim</th>
+            <th>Email</th>
+            <th>Aktif</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (IDReporting.Models.Kullanicilar kullanici in Model)
+        {
+        <tr>
+            <td>@kullanici.ID</td>
+            <td>@kullanici.Sube</td>
+            <td>@kullanici.KullaniciAdi</td>
+            <td>@kullanici.Isim</td>
+            <td>@kullanici.Email</td>
+            <td>@kullanici.Aktif</td>
+            <td><a href="@Url.Action("Kullanici","ID",new { id = kullanici.ID })">Duzenle</a> | <a href="@Url.Action("KullaniciSil","ID",new { id = kullanici.ID })" onclick="return confirm('Silmek istediğinizden emin misini?')">Sil</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
+

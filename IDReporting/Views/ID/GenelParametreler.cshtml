@@ -1,0 +1,53 @@
+﻿@model List<IDReporting.Models.Parametreler>
+@{
+    ViewBag.Title = "Genel Parametreler";
+}
+
+<h4>Genel Parametreler</h4>
+<form action="@Url.Action("GenelParametreler","ID",null)" method="post">
+    <div class="row">
+
+        <div class="col-12 col-sm-2">
+            <label>E-Mail</label>
+            <input type="text" name="Parametre_MailEmail" value="@(Model.Where((e)=>e.Tip == "Parametre_MailEmail").Count() > 0 ? Model.Where((e)=>e.Tip == "Parametre_MailEmail").First().Deger : "")" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>Parola</label>
+            <input type="text" name="Parametre_MailParola" value="@(Model.Where((e)=>e.Tip == "Parametre_MailParola").Count() > 0 ? Model.Where((e)=>e.Tip == "Parametre_MailParola").First().Deger : "")" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>Server</label>
+            <input type="text" name="Parametre_MailServer" value="@(Model.Where((e)=>e.Tip == "Parametre_MailServer").Count() > 0 ? Model.Where((e)=>e.Tip == "Parametre_MailServer").First().Deger : "")" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <label>Port</label>
+            <input type="text" name="Parametre_MailPort" value="@(Model.Where((e)=>e.Tip == "Parametre_MailPort").Count() > 0 ? Model.Where((e)=>e.Tip == "Parametre_MailPort").First().Deger : "")" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <br />
+            <label class="form-check-label">SSL</label>
+            <input type="checkbox" name="Parametre_MailSSL" value="E" class="form-check-input" @((Model.Where((e) => e.Tip == "Parametre_MailSSL").Count() > 0 ? Model.Where((e) => e.Tip == "Parametre_MailSSL").First().Deger : "") == "E" ? "checked=\"true\"" : "") />
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <label>Lisans Numarası</label>
+            <input type="text" readonly name="Parametre_LisansNumarası" value="@(Model.Where((e)=>e.Tip == "Parametre_LisansNumarası").Count() > 0 ? Model.Where((e)=>e.Tip == "Parametre_LisansNumarası").First().Deger : "")" class="form-control" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 col-sm-2">
+            <br />
+            <span>@ViewBag.Mesaj</span>
+            <br />
+            <input type="submit" name="name" value="Kaydet" class="btn btn-primary" />
+        </div>
+    </div>
+
+</form>
+@section Scripts {
+    <script type="text/javascript">
+
+    </script>
+}

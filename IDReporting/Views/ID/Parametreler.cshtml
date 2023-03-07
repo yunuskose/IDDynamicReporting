@@ -1,0 +1,27 @@
+﻿@model List<IDReporting.Models.Parametreler>
+@{
+    ViewBag.Title = Request.QueryString["Tip"]+ " Listesi";
+}
+
+<h4>@Request.QueryString["Tip"] Listesi</h4>
+<a href="@Url.Action("Parametre","ID",new { id = 0, Tip = Request.QueryString["Tip"] })">Yeni @Request.QueryString["Tip"] Ekle</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Değer</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (IDReporting.Models.Parametreler entity in Model)
+        {
+        <tr>
+            <td>@entity.ID</td>
+            <td>@entity.Deger</td>
+            <td><a href="@Url.Action("Parametre","ID",new { id = entity.ID, Tip =entity.Tip  })">Duzenle</a> | <a href="@Url.Action("ParametreSil","ID",new { id = entity.ID,Tip=entity.Tip })" onclick="return confirm('Silmek istediğinizden emin misini?')">Sil</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
+

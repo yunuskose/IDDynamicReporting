@@ -1,0 +1,403 @@
+﻿@using IDReporting.Models;
+@using System.Data;
+@using System.Data.SqlClient;
+
+@model IDReporting.Models.Sorgular
+@{
+    ViewBag.Title = Request.QueryString["Isim"];
+    IDReportingEntities db = new IDReportingEntities();
+    Baglantilar baglanti = db.Baglantilars.Where((e) => e.ID == Model.BaglantiID).First();
+    List<Filtreler> filtreler = db.Filtrelers.Where((e) => e.SorguID == Model.ID).ToList();
+
+    SqlCommand cmd = new SqlCommand();
+    switch (Model.SorguTipi)
+    {
+        case "Table":
+            cmd.CommandText = "Select * From  [" + baglanti.Veritabani + "]."+baglanti.Sema+"." + Model.Sorgu + " WITH(NOLOCK) Where 1=2";
+            break;
+        case "View":
+            cmd.CommandText = "Select * From  [" + baglanti.Veritabani + "]."+ baglanti.Sema + "." + Model.Sorgu + " Where 1=2";
+            break;
+        case "Procedure":
+            cmd.CommandText = "Sp_help  " + Model.Sorgu;
+            break;
+        default:
+            break;
+    }
+    DataSet ds = (DataSet)IDVeritabani.Sorgula(cmd, SorgulaTuru.DataSet, baglanti.ID);
+
+    int TableSatirNumarasi = 0;
+}
+<h4>Rapor Bilgisi - @Request.QueryString["Isim"]</h4>
+<form action="@Url.Action("Goster","Rapor",new { id = Model.ID, Isim = Request.QueryString["Isim"] })" method="post">
+
+    <div class="row">
+        <div class="col-3 col-sm-2">
+            <br />
+            <input type="submit" name="name" value="Raporu Göster" class="btn btn-primary" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1 col-sm-1" style="text-align:center;">
+            <strong>Seçim</strong>
+        </div>
+        <div class="col-2 col-sm-2">
+            <strong> Filtre İsmi</strong>
+        </div>
+        <div class="col-2 col-sm-2">
+            <strong> Filtre Tipi</strong>
+        </div>
+        <div class="col-2 col-sm-2">
+            <strong> Filtre Değeri</strong>
+        </div>
+    </div>
+    <hr />
+    @switch (Model.SorguTipi)
+    {
+        case "Table":
+            TableSatirNumarasi = 0;
+            foreach (DataColumn kolon in ds.Tables[0].Columns)
+            {
+                TableSatirNumarasi++;
+                <div class="row">
+                    <div class="col-1 col-sm-1" style="text-align:center;">
+                        <input type="checkbox" name="@("Secim_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="1" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? "checked " : "") ) />
+                    </div>
+                    @switch (kolon.DataType.Name)
+                    {
+                        case "String":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_String"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value="like" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "like").Count() > 0 ? "selected " : "")>İçerisinde</option>
+                                    <option value="not like" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "not like").Count() > 0 ? "selected " : "")>İçerisinde Değil</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="text" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri : "")" />
+                            </div>
+                            <hr />
+                            break;
+                        case "Int32":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_Int32"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="text" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri : "0")" />
+                            </div>
+                            <hr />
+                            break;
+                        case "Decimal":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_Decimal"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="text" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri : "0")" />
+                            </div>
+                            <hr />
+                            break;
+                        case "DateTime":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_DateTime"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="date" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri : DateTime.Today.ToString("yyyy.MM.dd")) " />
+                            </div>
+                            <hr />
+                            break;
+                        case "Boolean":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_Boolean"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="checkbox" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="0" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri == "1" ? "checked" : "" : "") />
+                            </div>
+                            <hr />
+                            break;
+                        default:
+                            break;
+                    }
+                </div>
+            }
+
+            break;
+        case "View":
+
+            TableSatirNumarasi = 0;
+            foreach (DataColumn kolon in ds.Tables[0].Columns)
+            {
+                TableSatirNumarasi++;
+                <div class="row">
+                    <div class="col-1 col-sm-1" style="text-align:center;">
+                        <input type="checkbox" name="@("Secim_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="1" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? "checked " : "") ) />
+                    </div>
+                    @switch (kolon.DataType.Name)
+                    {
+                        case "String":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_String"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value="like" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "like").Count() > 0 ? "selected " : "")>İçerisinde</option>
+                                    <option value="not like" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "not like").Count() > 0 ? "selected " : "")>İçerisinde Değil</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="text" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri : "")" />
+                            </div>
+                            <hr />
+                            break;
+                        case "Int32":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_Int32"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="text" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri : "0")" />
+                            </div>
+                            <hr />
+                            break;
+                        case "Decimal":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_Decimal"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="text" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri : "0")" />
+                            </div>
+                            <hr />
+                            break;
+                        case "DateTime":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_DateTime"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="date" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri : DateTime.Today.ToString("yyyy.MM.dd")) " />
+                            </div>
+                            <hr />
+                            break;
+                        case "Boolean":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon.ColumnName+"_Boolean"+"_"+TableSatirNumarasi)" value="@kolon.ColumnName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <select name="@("Type_"+kolon.ColumnName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="checkbox" name="@("Deger_"+kolon.ColumnName+"_"+TableSatirNumarasi)" value="0" @(filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName).Count() > 0 ? filtreler.Where((e) => e.ParemetreAdi == kolon.ColumnName).First().ParametreDegeri == "1" ? "checked" : "" : "") />
+                            </div>
+                            <hr />
+                            break;
+                        default:
+                            break;
+                    }
+                </div>
+            }
+            break;
+        case "Procedure":
+
+            TableSatirNumarasi = 0;
+            foreach (DataRow kolon in ds.Tables[1].Rows)
+            {
+                TableSatirNumarasi++;
+                kolon["Parameter_name"] = Convert.ToString(kolon["Parameter_name"]).Replace("@","");
+                string parameterName = Convert.ToString(kolon["Parameter_name"]);
+                <div class="row">
+                    <div class="col-1 col-sm-1" style="text-align:center;">
+                        <input type="checkbox" name="@("Secim_" + parameterName +"_"+TableSatirNumarasi)" value="1" @(filtreler.Where((e) => e.ParemetreAdi == parameterName).Count() > 0 ? "checked " : "") ) />
+                    </div>
+                    @switch (Convert.ToString(kolon["Type"]))
+                    {
+                        case "nvarchar":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+parameterName+"_String"+"_"+TableSatirNumarasi)" value="@parameterName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2" style="display:none;">
+                                <select name="@("Type_"+parameterName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value="like" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "like").Count() > 0 ? "selected " : "")>İçerisinde</option>
+                                    <option value="not like" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "not like").Count() > 0 ? "selected " : "")>İçerisinde Değil</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="text" name="@("Deger_"+parameterName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == parameterName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == parameterName).First().ParametreDegeri : "")" />
+                            </div>
+                            <hr />
+                            break;
+                        case "int":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+parameterName+"_Int32"+"_"+TableSatirNumarasi)" value="@parameterName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2"  style="display:none;">
+                                <select name="@("Type_"+parameterName+"_"+TableSatirNumarasi)" >
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="text" name="@("Deger_"+parameterName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == parameterName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == parameterName).First().ParametreDegeri : "0")" />
+                            </div>
+                            <hr />
+                            break;
+                        case "decimal":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+parameterName+"_Decimal"+"_"+TableSatirNumarasi)" value="@parameterName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2"  style="display:none;">
+                                <select name="@("Type_"+parameterName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="text" name="@("Deger_"+parameterName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == parameterName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == parameterName).First().ParametreDegeri : "0")" />
+                            </div>
+                            <hr />
+                            break;
+                        case "datetime":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+parameterName+"_DateTime"+"_"+TableSatirNumarasi)" value="@parameterName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2"  style="display:none;">
+                                <select name="@("Type_"+parameterName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="date" name="@("Deger_"+parameterName+"_"+TableSatirNumarasi)" value="@(filtreler.Where((e)=>e.ParemetreAdi == parameterName).Count() > 0 ? filtreler.Where((e)=>e.ParemetreAdi == parameterName).First().ParametreDegeri : DateTime.Today.ToString("yyyy.MM.dd")) " />
+                            </div>
+                            <hr />
+                            break;
+                        case "bit":
+                            <div class="col-2 col-sm-2">
+                                <label><input readonly style="background-color:beige;" type="text" name="@("Isim_"+kolon["Parameter_name"]+"_Boolean"+"_"+TableSatirNumarasi)" value="@parameterName" /></label>
+                            </div>
+                            <div class="col-2 col-sm-2"  style="display:none;">
+                                <select name="@("Type_"+parameterName+"_"+TableSatirNumarasi)">
+                                    <option value="=" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "=").Count() > 0 ? "selected " : "")>Eşit</option>
+                                    <option value="!=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == "!=").Count() > 0 ? "selected " : "")>Eşit Değil</option>
+                                    <option value=">" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == ">").Count() > 0 ? "selected " : "")>Büyük</option>
+                                    <option value=">=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == ">=").Count() > 0 ? "selected " : "")>Büyük Eşit</option>
+                                    <option value="<" @(filtreler.Where((e) => e.ParemetreAdi == parameterName && e.FiltreTipi == "<").Count() > 0 ? "selected " : "")>Küçük</option>
+                                    <option value="<=" @(filtreler.Where((e) => e.ParemetreAdi ==parameterName  && e.FiltreTipi == "<=").Count() > 0 ? "selected " : "")>Küçük Eşit</option>
+                                </select>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <input type="checkbox" name="@("Deger_"+parameterName+"_"+TableSatirNumarasi)" value="0" @(filtreler.Where((e) => e.ParemetreAdi == parameterName).Count() > 0 ? filtreler.Where((e) => e.ParemetreAdi == parameterName).First().ParametreDegeri == "1" ? "checked" : "" : "") />
+                            </div>
+                            <hr />
+                            break;
+                        default:
+                            break;
+                    }
+                </div>
+            }
+            break;
+        default:
+            break;
+    }
+
+</form>
+@section Scripts {
+    <script type="text/javascript">
+
+
+
+    </script>
+}

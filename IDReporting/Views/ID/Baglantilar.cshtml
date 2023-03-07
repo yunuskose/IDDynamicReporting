@@ -1,0 +1,37 @@
+﻿@model List<IDReporting.Models.Baglantilar>
+@{
+    ViewBag.Title = "Veritabanı Bağlantı Listesi";
+}
+
+<h4>Veritabanı Bağlantı Listesi</h4>
+<a href="@Url.Action("Baglanti","ID",new { id = 0 })">Yeni Bağlantı Ekle</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Şube</th>
+            <th>İsim</th>
+            <th>Veritabanı</th>
+            <th>Kullanıcı Adı</th>
+            <th>Parola</th>
+            <th>Port</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (IDReporting.Models.Baglantilar kullanici in Model)
+        {
+        <tr>
+            <td>@kullanici.ID</td>
+            <td>@kullanici.SubeID</td>
+            <td>@kullanici.Isim</td>
+            <td>@kullanici.Veritabani</td>
+            <td>@kullanici.KullaniciAdi</td>
+            <td>@kullanici.Parola</td>
+            <td>@kullanici.Port</td>
+            <td><a href="@Url.Action("Baglanti","ID",new { id = kullanici.ID })">Duzenle</a> | <a href="@Url.Action("BaglantiSil","ID",new { id = kullanici.ID })" onclick="return confirm('Silmek istediğinizden emin misini?')">Sil</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
+
