@@ -9,9 +9,9 @@ PROJENİN ÖZELLİKLERİ
 - Raporları alırken dinamik olarak procedure parametrelerinin filtreleme kısmına getirilmesi.
 - Kategori Oluşturma ve kategori altına raporların oluşturulması.
 
-Web Configteki "IDReportingEntities" bağlantısının sql veritabanı bilgilerini kendinize göre düzenlemeniz gerekmektedir.
+# Web Configteki "IDReportingEntities" bağlantısının sql veritabanı bilgilerini kendinize göre düzenlemeniz gerekmektedir.
 
-Projenin çalışması için veritabanında aşağıdaki tabloların oluşturulması gerekmektedir. 
+# Projenin çalışması için veritabanında aşağıdaki tabloların oluşturulması gerekmektedir. 
 
 USE [DATABASENAME]
 GO
